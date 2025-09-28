@@ -7,11 +7,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Planned
-- ARM64 interrupt handling system
 - Process scheduler with context switching
-- System call interface
 - Complete IPC implementation
 - Userspace service framework
+- Device driver framework
+
+## [0.4.0] - 2025-09-28
+
+### Added - ARM64 Interrupt Handling System
+- **Exception Vector Table**: Complete 16-entry ARM64 exception vector table
+  - Support for all execution states: EL1/EL0, AArch64/AArch32
+  - Context save/restore macros preserving 30 GP registers + SPSR/ELR
+  - Exception return handling with proper state restoration
+  - 2KB aligned vector table with 128-byte entry spacing
+- **Exception Processing**: Comprehensive exception handling and classification
+  - ESR_EL1 syndrome register decoding for exception classification
+  - Data/instruction abort handling with fault address (FAR_EL1) reporting
+  - System call processing via SVC instruction with immediate extraction
+  - WFI/WFE instruction handling for power management
+  - Comprehensive error reporting with program counter tracking
+- **ARM Generic Timer**: Hardware timer integration for scheduling
+  - 100Hz timer interrupts (10ms intervals) providing scheduling foundation
+  - Automatic timer re-arming using CNTP_CVAL_EL0 compare register
+  - Timer interrupt acknowledgment and proper IMASK bit handling
+  - Uptime tracking with periodic status reporting every second
+  - Thread-safe timer state management
+- **System Call Infrastructure**: Foundation for kernel/userspace communication
+  - SVC instruction handling with syndrome register processing
+  - System call number extraction from 25-bit immediate field
+  - Exception context preservation during system call processing
+  - Test system call functionality for validation
+- **Interrupt Control & Statistics**: Comprehensive interrupt management
+  - DAIF register manipulation for interrupt masking/unmasking
+  - Fine-grained enable/disable for IRQ, FIQ, and SError types
+  - VBAR_EL1 exception vector table installation during boot
+  - Real-time interrupt statistics with thread-safe Mutex collection
+  - Statistics tracking: IRQ, sync exceptions, FIQ, SError, timer ticks
+- **Testing & Validation**: Automated interrupt system verification
+  - Interrupt enable/disable control testing
+  - System call handling verification with before/after statistics
+  - Timer interrupt functionality testing with delay loops
+  - Real-time statistics display for all exception types
+  - Automated test execution integrated into kernel boot sequence
+
+### Technical Specifications
+- **Exception Context**: 43 registers total (30 GP + SPSR/ELR/LR + FP)
+- **Timer Configuration**: 100Hz frequency (10ms resolution)
+- **Vector Table**: 2KB aligned, 16 entries × 128 bytes each
+- **Exception Levels**: EL1 (kernel), EL0 (userspace), AArch32 compatibility
+- **Interrupt Types**: Synchronous, IRQ, FIQ, SError with ARM64 prioritization
+
+### Integration
+- Timer interrupts provide foundation for preemptive scheduling
+- System call infrastructure enables future kernel/userspace API
+- Exception handling integrated with existing memory management
+- Console output integration for comprehensive debugging support
 
 ## [0.3.0] - 2025-09-28
 
