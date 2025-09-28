@@ -1,0 +1,15 @@
+[workspace]
+members = [
+    "kernel",
+    "userland/runtime",
+    "userland/services/memory-manager",
+    "userland/services/process-manager",
+    "bootloader"
+]
+resolver = "2"
+
+[workspace.dependencies]
+# Shared dependencies across workspace
+spin = "0.9"
+linked_list_allocator = "0.10"
+bitflags = "2.0"

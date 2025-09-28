@@ -1,0 +1,25 @@
+[package]
+name = "rustkernel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+spin = { workspace = true }
+linked_list_allocator = { workspace = true }
+bitflags = { workspace = true }
+
+[profile.dev]
+panic = "abort"
+lto = false
+
+[profile.release]
+panic = "abort"
+lto = true
+
+[package.metadata.cargo-xbuild]
+linker = "aarch64-linux-gnu-ld"
+linker-flavor = "ld"
+
+[[bin]]
+name = "rustkernel"
+path = "src/main.rs"
