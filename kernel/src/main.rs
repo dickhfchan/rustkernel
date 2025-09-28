@@ -10,13 +10,15 @@ mod ipc;
 mod uart;
 mod devicetree;
 mod allocator;
+mod interrupt_test;
 
 use core::panic::PanicInfo;
 use core::arch::global_asm;
 use devicetree::parse_device_tree;
 
-// Include the boot assembly
+// Include the boot assembly and exception vectors
 global_asm!(include_str!("boot.s"));
+global_asm!(include_str!("exceptions.s"));
 
 /// Main Rust entry point called from boot.s
 #[no_mangle]
@@ -52,6 +54,9 @@ pub extern "C" fn rust_main() -> ! {
     interrupts::init();
     ipc::init();
     process::init();
+    
+    // Run interrupt system tests
+    interrupt_test::test_interrupt_system();
     
     println!("Boot: Kernel initialization complete");
     println!("Boot: Starting userspace services...");
